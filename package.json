@@ -1,0 +1,31 @@
+{
+  "name": "shill-bot",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "private": true,
+  "dependencies": {
+    "body-parser": "^1.20.2",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "gridfs-stream": "^1.1.1",
+    "input": "^1.0.1",
+    "mongodb": "^6.7.0",
+    "mongoose": "^8.4.1",
+    "multer": "^1.4.3",
+    "multer-gridfs-storage": "^5.0.2",
+    "node-cron": "^3.0.3",
+    "node-telegram-bot-api": "^0.66.0",
+    "redis": "^4.6.14",
+    "sqlite3": "^5.1.7",
+    "swagger-jsdoc": "^6.2.8",
+    "swagger-ui-express": "^5.0.1",
+    "telegram": "^2.22.2",
+    "uuid": "^10.0.0",
+    "ws": "^8.17.1"
+  }
+}

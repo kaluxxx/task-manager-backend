@@ -31,18 +31,12 @@ const wss = configureWebSocket(server); // Configurez WebSocket
 app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-app.use(cors({
-    origin: "https://shill-bot-frontend.netlify.app",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    preflightContinue: false,
-    optionsSuccessStatus: 204,
-    credentials: true,
-    allowedHeaders: ['Content-Type', 'Authorization'],
-}));
-app.use('/api/accounts', accountRoutes)
-app.use('/api/tasks', taskRoutes);
-app.use('/api/auth', authenticationRoutes);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+app.use(cors("*"));
+
+router.use('/api/accounts', accountRoutes)
+router.use('/api/tasks', taskRoutes);
+router.use('/api/auth', authenticationRoutes);
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 

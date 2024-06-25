@@ -5,6 +5,8 @@ const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+router.get('/test', taskController.getTasks);
+
 /**
  * @swagger
  * /tasks:

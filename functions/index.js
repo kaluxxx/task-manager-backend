@@ -33,6 +33,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors("*"));
 
+
 router.use('/api/accounts', accountRoutes)
 router.use('/api/tasks', taskRoutes);
 router.use('/api/auth', authenticationRoutes);

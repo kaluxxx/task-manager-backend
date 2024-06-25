@@ -31,7 +31,7 @@ const wss = configureWebSocket(server); // Configurez WebSocket
 app.use(express.json());
 app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
-app.use(cors("*"));
+app.use(cors("https://shill-bot-frontend.netlify.app"));
 
 app.use('/api/accounts', accountRoutes)
 app.use('/api/tasks', taskRoutes);

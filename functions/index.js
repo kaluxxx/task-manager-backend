@@ -42,5 +42,8 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 app.use(errorHandler);
 
 app.use("/.netlify/functions/index", router);
-
+app.use("/", router);
+app.listen(config.port, () => {
+    console.log(`App is running on port ${config.port}`);
+});
 module.exports.handler = serverless(app);

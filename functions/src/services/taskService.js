@@ -138,8 +138,6 @@ const taskService = {
             cron.schedule(`*/${task.resendInterval} * * * * *`, async () => {
                 console.log('Cron job executed at:', new Date());
                 try {
-                    task.jobId = uuid.v4();
-                    await task.save();
                     for (const account of task.accounts) {
                         const client = await clientService.getClient(account.phoneNumber);
                         for (const channel of task.channels) {
@@ -151,6 +149,7 @@ const taskService = {
                 }
             });
 
+            task.jobId = uuid.v4();
             task.isRunning = true;
             await task.save();
             return task;

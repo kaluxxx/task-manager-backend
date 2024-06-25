@@ -1,6 +1,6 @@
 const {TelegramClient} = require('telegram');
 const {StringSession} = require('telegram/sessions');
-const Account = require('../models/Account');
+const Account = require('../models/account');
 
 const clientService = {
     async getClient(phoneNumber) {

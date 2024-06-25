@@ -1,4 +1,4 @@
-const config = require('../../config');
+const config = require('../../../config');
 const {connect, connection} = require("mongoose");
 const Grid = require('gridfs-stream');
 const {GridFSBucket} = require("mongodb");

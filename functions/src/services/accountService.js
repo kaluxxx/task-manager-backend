@@ -1,7 +1,7 @@
 const { TelegramClient, Api} = require("telegram");
 const { StringSession } = require("telegram/sessions");
 const { generatePromise } = require("../utils/promiseGenerator");
-const Account = require('../models/Account');
+const Account = require('../models/account');
 const { ConflictError, NotFoundError } = require('../utils/errors');
 
 let globalPhoneCodePromise = null;

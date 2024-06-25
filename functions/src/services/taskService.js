@@ -1,4 +1,4 @@
-const Task = require('../models/Task');
+const Task = require('../models/task');
 const cron = require('node-cron');
 const uuid = require('uuid');
 const clientService = require('./clientService');

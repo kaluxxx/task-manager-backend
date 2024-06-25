@@ -7,15 +7,15 @@ const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
 const options = require("../swaggerOptions");
 const http = require('http');
-const accountRoutes = require('../src/routes/accountRoutes');
-const taskRoutes = require('../src/routes/taskRoutes');
-const authenticationRoutes = require('../src/routes/authenticationRoutes');
+const accountRoutes = require('./src/routes/accountRoutes');
+const taskRoutes = require('./src/routes/taskRoutes');
+const authenticationRoutes = require('./src/routes/authenticationRoutes');
 
-const taskService = require('../src/services/taskService');
+const taskService = require('./src/services/taskService');
 
-const {errorHandler} = require("../src/middleware/errorMiddleware");
+const {errorHandler} = require("./src/middleware/errorMiddleware");
 const configureWebSocket = require("../websocket");
-const {connectDB} = require("../src/db/db");
+const {connectDB} = require("./src/db/db");
 
 connectDB();
 
@@ -42,4 +42,7 @@ app.use(errorHandler);
 
 app.use("/.netlify/functions/app", router);
 
+app.listen(config.port, () => {
+    console.log(`App is running on port ${config.port}`);
+});
 module.exports.handler = serverless(app);

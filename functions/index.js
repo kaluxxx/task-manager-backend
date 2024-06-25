@@ -33,6 +33,7 @@ app.use(bodyParser.json({ limit: '10mb' }));
 app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors("*"));
 
+
 app.use('/api/accounts', accountRoutes)
 app.use('/api/tasks', taskRoutes);
 app.use('/api/auth', authenticationRoutes);
@@ -40,7 +41,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 
-app.use("/.netlify/functions/app", router);
+app.use("/.netlify/functions", router);
 
 app.listen(config.port, () => {
     console.log(`App is running on port ${config.port}`);

@@ -41,6 +41,6 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 
-app.use("/.netlify/functions/api", router);
+app.use("/.netlify/functions/index", router);
 
 module.exports.handler = serverless(app);

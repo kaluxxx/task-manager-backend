@@ -34,16 +34,13 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors("*"));
 
 
-app.use('/api/accounts', accountRoutes)
-app.use('/api/tasks', taskRoutes);
-app.use('/api/auth', authenticationRoutes);
+app.use('/accounts', accountRoutes)
+app.use('/tasks', taskRoutes);
+app.use('/auth', authenticationRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 
-app.use("/.netlify/functions", router);
+app.use("/.netlify/functions/api", router);
 
-app.listen(config.port, () => {
-    console.log(`App is running on port ${config.port}`);
-});
 module.exports.handler = serverless(app);

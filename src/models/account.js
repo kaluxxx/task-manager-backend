@@ -41,8 +41,8 @@ const accountSchema = new mongoose.Schema({
     apiHash: { type: String, required: true },
     isActivated: { type: Boolean, required: false, default: false },
     session: { type: String, required: false },
-    userId: { type: Number, required: false },
-    username: { type: String, required: false }
+    username: { type: String, required: false },
+    user: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true }
 });
 
 module.exports = mongoose.model('Account', accountSchema);

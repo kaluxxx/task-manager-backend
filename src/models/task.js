@@ -73,7 +73,8 @@ const taskSchema = new mongoose.Schema({
         default: false
     },
     resendInterval: {type: Number, required: true},
-    jobId: {type: String}
+    jobId: {type: String},
+    user: {type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true}
 });
 
 taskSchema.pre('findOneAndDelete', async function (next) {

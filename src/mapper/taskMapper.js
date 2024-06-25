@@ -1,5 +1,6 @@
 const accountMapper = require("./accountMapper");
 const fileMapper = require("./fileMapper");
+const userMapper = require("./userMapper");
 
 const taskMapper = {
     mapModelToDto: (model) => {
@@ -11,9 +12,9 @@ const taskMapper = {
         return { id: _id, ...rest };
     },
     mapModelsToDtos: (models) => models.map((model) => taskMapper.mapModelToDto(model)),
-    mapDtoToModel: ({ name, accounts, channels, message, resendInterval }) => {
+    mapDtoToModel: ({ name, accounts, channels, message, resendInterval, user }) => {
         accounts = accountMapper.mapDtosToModels(accounts);
-        return { name, accounts, channels, message, resendInterval };
+        return { name, accounts, channels, message, resendInterval, user };
     },
 }
 

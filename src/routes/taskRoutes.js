@@ -1,6 +1,7 @@
 const express = require('express');
 const taskController = require('../controllers/taskController');
-const upload = require("../middleware/upload");
+const upload = require("../middleware/uploadMiddleware");
+const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -24,7 +25,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Tasks'
  */
-router.post('/', taskController.createTask);
+router.post('/', authenticateToken, taskController.createTask);
 
 /**
  * @swagger
@@ -66,7 +67,7 @@ router.put('/image/:id', upload.single('image'), taskController.updateImage);
  *       200:
  *         description: La tâche a été démarrée avec succès
  */
-router.post('/start/:id', taskController.startTask);
+router.post('/start/:id', authenticateToken, taskController.startTask);
 
 /**
  * @swagger
@@ -85,7 +86,7 @@ router.post('/start/:id', taskController.startTask);
  *       200:
  *         description: La tâche a été arrêtée avec succès
  */
-router.post('/stop/:id', taskController.stopTask);
+router.post('/stop/:id', authenticateToken, taskController.stopTask);
 
 /**
  * @swagger
@@ -103,7 +104,7 @@ router.post('/stop/:id', taskController.stopTask);
  *               items:
  *                 $ref: '#/components/schemas/Tasks'
  */
-router.get('/', taskController.getTasks);
+router.get('/', authenticateToken, taskController.getTasksByUser);
 
 /**
  * @swagger
@@ -126,7 +127,7 @@ router.get('/', taskController.getTasks);
  *             schema:
  *               $ref: '#/components/schemas/Tasks'
  */
-router.get('/:id', taskController.getTaskById);
+router.get('/:id',  taskController.getTaskById);
 
 /**
  * @swagger
@@ -145,7 +146,7 @@ router.get('/:id', taskController.getTaskById);
  *       200:
  *         description: La tâche a été supprimée avec succès
  */
-router.delete('/:id', taskController.deleteTask);
+router.delete('/:id', authenticateToken, taskController.deleteTask);
 
 /**
  * @swagger
@@ -174,7 +175,7 @@ router.delete('/:id', taskController.deleteTask);
  *             schema:
  *               $ref: '#/components/schemas/Tasks'
  */
-router.put('/:id', taskController.updateTask);
+router.put('/:id', authenticateToken, taskController.updateTask);
 
 
 module.exports = router;

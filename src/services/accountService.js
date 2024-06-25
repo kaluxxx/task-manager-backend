@@ -7,14 +7,14 @@ const { ConflictError, NotFoundError } = require('../utils/errors');
 let globalPhoneCodePromise = null;
 
 const accountService = {
-    async createAccount({ phoneNumber, apiId, apiHash }) {
+    async createAccount({ user, phoneNumber, apiId, apiHash }) {
         try {
             const existingAccount = await Account.findOne({ phoneNumber });
             if (existingAccount) {
                 throw new ConflictError('Account with this phone number already exists');
             }
 
-            const account = new Account({ phoneNumber, apiId, apiHash });
+            const account = new Account({ user, phoneNumber, apiId, apiHash });
             await account.save();
             return account;
         } catch (error) {
@@ -85,16 +85,16 @@ const accountService = {
         }
         globalPhoneCodePromise.resolve(phoneCode);
     },
-    async getAccounts() {
+    async getAccounts(user) {
         try {
-            return await Account.find();
+            return await Account.find({ user });
         } catch (e) {
             throw new Error('Failed to get accounts');
         }
     },
-    async getAccountById(id) {
+    async getAccountById(user, id) {
         try {
-            const account = await Account.findById(id);
+            const account = await Account.findOne({ user, _id: id });
             if (!account) {
                 throw new NotFoundError('Account not found');
             }
@@ -103,9 +103,9 @@ const accountService = {
             throw new Error('Failed to get account by ID');
         }
     },
-    async updateAccount(id, { phoneNumber, apiId, apiHash }) {
+    async updateAccount(user, id, { phoneNumber, apiId, apiHash }) {
         try {
-            const account = await Account.findById(id);
+            const account = await Account.findOne({ user, _id: id });
             if (!account) {
                 throw new NotFoundError('Account not found');
             }
@@ -118,9 +118,9 @@ const accountService = {
             throw new Error('Failed to update account');
         }
     },
-    async deleteAccount(id) {
+    async deleteAccount(user, id) {
         try {
-            const account = await Account.findById(id);
+            const account = await Account.findOne({ user, _id: id });
             if (!account) {
                 throw new NotFoundError('Account not found');
             }

@@ -7,7 +7,7 @@ const taskMapper = require("../mapper/taskMapper");
 const File = require("../models/file");
 
 const taskService = {
-    async createTask({name, accounts, channels, message, resendInterval}) {
+    async createTask({name, accounts, channels, message, resendInterval, user}) {
         try {
             const taskToCreate = taskMapper.mapDtoToModel({
                 name,
@@ -15,7 +15,9 @@ const taskService = {
                 channels,
                 message,
                 resendInterval,
+                user,
             });
+
 
             const task = new Task(taskToCreate);
             await task.save();
@@ -25,7 +27,7 @@ const taskService = {
             throw error;
         }
     },
-    async addImage(id, fileName, buffer) {
+    async addImage(user, id, fileName, buffer) {
         try {
             const image = new File({
                 name: fileName,
@@ -33,7 +35,8 @@ const taskService = {
             });
             await image.save();
 
-            const task = await taskService.getTaskById(id)
+            const task = await taskService.getTaskById(user, id);
+            console.log("task :", task)
             task.image = image._id;
             await task.save();
 
@@ -42,7 +45,7 @@ const taskService = {
             throw error;
         }
     },
-    async updateImage(id, fileName, buffer) {
+    async updateImage(user, id, fileName, buffer) {
         try {
             const image = new File({
                 name: fileName,
@@ -50,10 +53,10 @@ const taskService = {
             });
             await image.save();
 
-            const task = await taskService.getTaskById(id)
+            const task = await taskService.getTaskById(user, id);
 
             if (task.isRunning) {
-                await taskService.stopTask(id);
+                await taskService.stopTask(user, id);
             }
 
             if (task.image) {
@@ -64,9 +67,9 @@ const taskService = {
             await task.save();
 
             if (task.isRunning) {
-                await taskService.startTask(id);
+                await taskService.startTask(user, id);
             }
-            return await taskService.getTaskById(id);
+            return await taskService.getTaskById(user, id);
         } catch (error) {
             throw error;
         }
@@ -78,34 +81,43 @@ const taskService = {
             throw error;
         }
     },
-    async getTaskById(id) {
+    async getTasksByUser(user) {
         try {
-            return await Task.findById(id).populate('accounts').populate('image');
+            return await Task.find({user}).populate('accounts').populate('image');
         } catch (error) {
             throw error;
         }
     },
-    async deleteTask(id) {
+    async getTaskById(user, id) {
         try {
-            await Task.findOneAndDelete(id);
+            return await Task.findById({_id: id, user})
+                .populate('accounts')
+                .populate('image');
+        } catch (error) {
+            throw error;
+        }
+    },
+    async deleteTask(user, id) {
+        try {
+            await Task.findOneAndDelete({user, _id: id});
         } catch (error) {
             console.error(error);
             throw error;
         }
     },
-    async updateTask(id, taskToUpdate) {
+    async updateTask(user, id, taskToUpdate) {
         try {
             if (taskToUpdate.isRunning) {
-                await taskService.stopTask(id);
+                await taskService.stopTask(user, id);
             }
 
             const task = await Task
-                .findByIdAndUpdate(id, taskToUpdate)
+                .findByIdAndUpdate({_id: id, user}, taskToUpdate)
                 .populate('accounts')
                 .populate('image');
 
             if (taskToUpdate.isRunning) {
-                await taskService.startTask(id);
+                await taskService.startTask(user, id);
             }
 
             return task;
@@ -113,30 +125,27 @@ const taskService = {
             throw error;
         }
     },
-    async startTask(id) {
+    async startTask(user, id) {
         try {
-            const task = await Task.findById(id)
+            const task = await Task.findById({_id: id, user})
                 .populate('accounts')
-                .populate('image')
+                .populate('image');
 
             if (!task) {
                 throw new Error('Task not found');
             }
 
-
             cron.schedule(`*/${task.resendInterval} * * * * *`, async () => {
                 console.log('Cron job executed at:', new Date());
-
                 try {
                     task.jobId = uuid.v4();
-
+                    await task.save();
                     for (const account of task.accounts) {
                         const client = await clientService.getClient(account.phoneNumber);
                         for (const channel of task.channels) {
                             await messageService.sendMessage(client, channel.id, task.message, task.image);
                         }
                     }
-                    await task.save();
                 } catch (error) {
                     console.error(`Error during task execution: ${error.message}`);
                 }
@@ -149,13 +158,15 @@ const taskService = {
             throw error;
         }
     },
-    async stopTask(id) {
+    async stopTask(user, id) {
         try {
-            const task = await Task.findById(id);
+            const task = await Task.findById({_id: id, user});
+            console.log("task :", task)
             if (task.jobId) {
                 // Supprimer la tâche planifiée
                 cron.getTasks({jobId: task.jobId}).forEach(task => {
                     task.stop();
+                    console.log(`Task ${task.jobId} stopped`)
                 });
                 task.jobId = null;
                 task.isRunning = false;
@@ -170,7 +181,7 @@ const taskService = {
         try {
             const tasksToRestart = await Task.find({isRunning: true});
             for (const task of tasksToRestart) {
-                await this.startTask(task.id);
+                await this.startTask(task.user, task.id);
             }
         } catch (error) {
             throw error;

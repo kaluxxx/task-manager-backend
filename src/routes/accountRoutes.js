@@ -1,5 +1,6 @@
 const express = require('express');
 const accountController = require('../controllers/accountController');
+const authenticateToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
@@ -23,7 +24,7 @@ const router = express.Router();
  *             schema:
  *               $ref: '#/components/schemas/Account'
  */
-router.post('/', accountController.createAccount);
+router.post('/', authenticateToken, accountController.createAccount);
 
 /**
  * @swagger
@@ -45,7 +46,7 @@ router.post('/', accountController.createAccount);
  *             schema:
  *               $ref: '#/components/schemas/Account'
  */
-router.put('/disable/:id', accountController.disableAccount);
+router.put('/disable/:id', authenticateToken, accountController.disableAccount);
 
 /**
  * @swagger
@@ -63,7 +64,7 @@ router.put('/disable/:id', accountController.disableAccount);
  *               items:
  *                 $ref: '#/components/schemas/Account'
  */
-router.get('/', accountController.getAccounts);
+router.get('/', authenticateToken, accountController.getAccounts);
 
 /**
  * @swagger
@@ -86,7 +87,7 @@ router.get('/', accountController.getAccounts);
  *             schema:
  *               $ref: '#/components/schemas/Account'
  */
-router.get('/:id', accountController.getAccountById);
+router.get('/:id', authenticateToken, accountController.getAccountById);
 
 /**
  * @swagger
@@ -109,7 +110,7 @@ router.get('/:id', accountController.getAccountById);
  *             schema:
  *               $ref: '#/components/schemas/Account'
  */
-router.put('/:id', accountController.updateAccount)
+router.put('/:id', authenticateToken, accountController.updateAccount)
 
 /**
  * @swagger
@@ -128,6 +129,6 @@ router.put('/:id', accountController.updateAccount)
  *       200:
  *         description: Le compte a été supprimé avec succès
  */
-router.delete('/:id', accountController.deleteAccount);
+router.delete('/:id', authenticateToken, accountController.deleteAccount);
 
 module.exports = router;

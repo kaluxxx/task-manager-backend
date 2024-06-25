@@ -5,8 +5,9 @@ const accountController = {
     async createAccount(req, res, next) {
         try {
             const { phoneNumber, apiId, apiHash } = req.body;
+            const user = req.user;
             const account = await accountService
-                .createAccount({ phoneNumber, apiId, apiHash })
+                .createAccount({ user, phoneNumber, apiId, apiHash })
                 .then(account => accountMapper.mapModelToDto(account));
             res.status(201).json(account);
         } catch (e) {
@@ -28,8 +29,9 @@ const accountController = {
     },
     async getAccounts(req, res, next) {
         try {
+            const user = req.user;
             const accounts = await accountService
-                .getAccounts()
+                .getAccounts(user)
                 .then(accounts => accountMapper.mapModelsToDtos(accounts));
 
             res.send(accounts);
@@ -40,8 +42,9 @@ const accountController = {
     async getAccountById(req, res, next) {
         try {
             const { id } = req.params;
+            const user = req.user;
             const account = await accountService
-                .getAccountById(id)
+                .getAccountById(user, id)
                 .then(account => accountMapper.mapModelToDto(account));
             res.send(account);
         } catch (e) {
@@ -51,9 +54,10 @@ const accountController = {
     async updateAccount(req, res, next) {
         try {
             const { id } = req.params;
+            const user = req.user;
             const { phoneNumber, apiId, apiHash } = req.body;
             const account = await accountService
-                .updateAccount(id, { phoneNumber, apiId, apiHash })
+                .updateAccount(user, id, { phoneNumber, apiId, apiHash })
                 .then(account => accountMapper.mapModelToDto(account));
             res.send(account);
         } catch (e) {
@@ -63,7 +67,8 @@ const accountController = {
     async deleteAccount(req, res, next) {
         try {
             const { id } = req.params;
-            await accountService.deleteAccount(id);
+            const user = req.user;
+            await accountService.deleteAccount(user, id);
             res.send('Account deleted');
         } catch (e) {
             next(e);

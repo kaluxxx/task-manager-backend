@@ -1,20 +1,21 @@
-const config = require('./config');
+const config = require('../config');
 const express = require("express");
+const serverless = require("serverless-http");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
-const options = require("./swaggerOptions");
+const options = require("../swaggerOptions");
 const http = require('http');
+const accountRoutes = require('../src/routes/accountRoutes');
+const taskRoutes = require('../src/routes/taskRoutes');
+const authenticationRoutes = require('../src/routes/authenticationRoutes');
 
-const accountRoutes = require('./src/routes/accountRoutes');
-const taskRoutes = require('./src/routes/taskRoutes');
-const taskService = require('./src/services/taskService');
+const taskService = require('../src/services/taskService');
 
-const {errorHandler} = require("./src/middleware/errorMiddleware");
-const configureWebSocket = require("./websocket");
-const {connectDB} = require("./src/db/db");
-
+const {errorHandler} = require("../src/middleware/errorMiddleware");
+const configureWebSocket = require("../websocket");
+const {connectDB} = require("../src/db/db");
 
 connectDB();
 
@@ -23,6 +24,7 @@ const specs = swaggerJsdoc(options);
 taskService.restartTasks();
 
 const app = express();
+const router = express.Router();
 const server = http.createServer(app);
 const wss = configureWebSocket(server); // Configurez WebSocket
 
@@ -33,10 +35,11 @@ app.use(cors("*"));
 
 app.use('/api/accounts', accountRoutes)
 app.use('/api/tasks', taskRoutes);
+app.use('/api/auth', authenticationRoutes);
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 
-app.listen(config.port, () => {
-    console.log(`Server is running on port ${config.port}`);
-});
+app.use("/.netlify/functions/app", router);
+
+module.exports.handler = serverless(app);

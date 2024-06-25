@@ -34,10 +34,10 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors("*"));
 
 
-app.use('/accounts', accountRoutes)
-app.use('/tasks', taskRoutes);
-app.use('/auth', authenticationRoutes);
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
+router.use('/api/accounts', accountRoutes)
+router.use('/api/tasks', taskRoutes);
+router.use('/api/auth', authenticationRoutes);
+router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 

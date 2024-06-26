@@ -1,6 +1,5 @@
 const config = require('./config');
 const express = require("express");
-const serverless = require("serverless-http");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
@@ -34,6 +33,9 @@ app.use(bodyParser.urlencoded({ limit: '10mb', extended: true }));
 app.use(cors("*"));
 
 
+router.get("/", (req, res) => {
+    res.send("Hello World!");
+});
 router.use('/api/accounts', accountRoutes)
 router.use('/api/tasks', taskRoutes);
 router.use('/api/auth', authenticationRoutes);
@@ -41,9 +43,9 @@ router.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs));
 
 app.use(errorHandler);
 
-app.use("/.netlify/functions/index", router);
 app.use("/", router);
+
 app.listen(config.port, () => {
     console.log(`App is running on port ${config.port}`);
 });
-module.exports.handler = serverless(app);
+module.exports = app;

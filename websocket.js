@@ -1,6 +1,6 @@
 const WebSocket = require('ws');
-const accountService = require('./functions/src/services/accountService');
-const accountMapper = require("./functions/src/mapper/accountMapper");
+const accountService = require('./src/services/accountService');
+const accountMapper = require("./src/mapper/accountMapper");
 
 const configureWebSocket = () => {
     const ws = new WebSocket.Server({ port: 8080 });

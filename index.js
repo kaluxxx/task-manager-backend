@@ -1,11 +1,11 @@
-const config = require('../config');
+const config = require('./config');
 const express = require("express");
 const serverless = require("serverless-http");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const swaggerUi = require("swagger-ui-express");
 const swaggerJsdoc = require("swagger-jsdoc");
-const options = require("../swaggerOptions");
+const options = require("./swaggerOptions");
 const http = require('http');
 const accountRoutes = require('./src/routes/accountRoutes');
 const taskRoutes = require('./src/routes/taskRoutes');
@@ -14,7 +14,7 @@ const authenticationRoutes = require('./src/routes/authenticationRoutes');
 const taskService = require('./src/services/taskService');
 
 const {errorHandler} = require("./src/middleware/errorMiddleware");
-const configureWebSocket = require("../websocket");
+const configureWebSocket = require("./websocket");
 const {connectDB} = require("./src/db/db");
 
 connectDB();

@@ -3,7 +3,7 @@ const accountService = require('./src/services/accountService');
 const accountMapper = require("./src/mapper/accountMapper");
 
 const configureWebSocket = () => {
-    const ws = new WebSocket.Server({ port: 8080 });
+    const ws = new WebSocket.Server({ host: '0.0.0.0', port: 8080 });
 
     ws.on('connection', (ws) => {
         console.log('WebSocket connection established');

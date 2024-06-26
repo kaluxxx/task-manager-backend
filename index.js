@@ -15,6 +15,7 @@ const taskService = require('./src/services/taskService');
 const {errorHandler} = require("./src/middleware/errorMiddleware");
 const configureWebSocket = require("./websocket");
 const {connectDB} = require("./src/db/db");
+const morgan = require("morgan");
 
 connectDB();
 
